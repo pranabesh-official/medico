@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-
+import { singIn } from "../api/auth";
 import { Link } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
@@ -45,8 +45,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+function SignIn() {
   const classes = useStyles();
+
+  const [state, setstate] = useState({
+    email: "",
+    pasword: "",
+  });
+
+  const handleChenge = (e) => {
+    setstate({ ...state, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (state.email && state.pasword){
+      singIn(state.email, state.pasword).then((data) => {
+        console.log(data);
+      });
+    }
+    
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -58,7 +77,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -69,19 +88,21 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            onChange={handleChenge}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            name="password"
+            name="pasword"
             label="Password"
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handleChenge}
           />
-         
+
           <Button
             type="submit"
             fullWidth
@@ -91,10 +112,12 @@ export default function SignIn() {
           >
             Sign In
           </Button>
-          <Grid  container
-  direction="column-reverse"
-  justify="space-between"
-  alignItems="center">
+          <Grid
+            container
+            direction="column-reverse"
+            justify="space-between"
+            alignItems="center"
+          >
             <Grid item>
               <Link to="/singup" variant="body2">
                 {"Don't have an account? Sign Up"}
@@ -109,3 +132,5 @@ export default function SignIn() {
     </Container>
   );
 }
+
+export default SignIn;
